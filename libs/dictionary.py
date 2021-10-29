@@ -1,4 +1,4 @@
-from libs.settings import OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, OPEN_ACCESS_KEY, USERNAME, PASSWORD, TIMESTAMP, SIGN
+from libs.settings import OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, OPEN_ACCESS_KEY, MOLOG_USERNAME, MOLOG_PASSWORD, TIMESTAMP, API_CODE
 import requests
 import json
 
@@ -11,17 +11,17 @@ class rest_molog(object):
         self.app_key = OPEN_APP_KEY
         self.secret_key = OPEN_SECRET_KEY
         self.access_key = OPEN_ACCESS_KEY
-        self.username = USERNAME
-        self.password = PASSWORD
+        self.username = MOLOG_USERNAME
+        self.password = MOLOG_PASSWORD
         self.timestamp = TIMESTAMP
-        self.sign = SIGN
+        self.sign = API_CODE
 
     def gen_details_default(self, types):
 
-        if types == "create_token":
-            url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
-        if types == "refresh_token":
-            url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
+        # if types == "create_token":
+        #     url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
+        # if types == "refresh_token":
+        #     url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
         if types == "create_and_update_SKU":
             url = self.url+"/sku/sku?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
         if types == "update_SKU_BOM":
@@ -38,10 +38,7 @@ class rest_molog(object):
             'PASSWORD' : self.password
         }
         
-        payload = json.dumps(ID)
-        print(self.username)
-        print(USERNAME)
-        print(payload)
+        payload = json.dump(ID)
 
         headers = {
             'Content-Type' : 'application/json'
@@ -49,22 +46,24 @@ class rest_molog(object):
  
         return url, payload, headers
     
-    def create_token(self):
+    # def create_token(self):
 
-        url, payload, headers = self.gen_details_default("create_token")
-        response = requests.request("POST", url, headers=headers, data=payload)
+    #     url, payload, headers = self.gen_details_default("create_token")
+    #     response = requests.request("POST", url, headers=headers, data=payload)
 
-        print(response.text)
+    #     print(response.text)
 
-    def refresh_token(self):
+    # def refresh_token(self):
         
-        url, __, headers = self.gen_details_default("refresh_token")
-        payload = {
-            "REFRESH_TOKEN" : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImN1c3RfaWQiOjQsImFwaV9zaWduYXR1cmUiOiJjR1NKNmUzVlI1RiV5a3NmcjR4a082M1BXUFhEODlIS0w1R285NTVsSEUjUlFOQzF4VEtnUXduSktkNnFsNyUlIiwiaWF0IjoxNjA1MDgwODU2LCJleHAiOjE2MDc2NzI4NTZ9.J6G7Af5yeM-uJ5JNwNJJZ85fhL_rJ5nJVYs1JupjnsM',
-        }
-        response = requests.request("POST", url, headers=headers, data=payload)
+    #     url, __, headers = self.gen_details_default("refresh_token")
+    #     re_token = {
+    #         "REFRESH_TOKEN" : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImN1c3RfaWQiOjQsImFwaV9zaWduYXR1cmUiOiJjR1NKNmUzVlI1RiV5a3NmcjR4a082M1BXUFhEODlIS0w1R285NTVsSEUjUlFOQzF4VEtnUXduSktkNnFsNyUlIiwiaWF0IjoxNjA1MDgwODU2LCJleHAiOjE2MDc2NzI4NTZ9.J6G7Af5yeM-uJ5JNwNJJZ85fhL_rJ5nJVYs1JupjnsM',
+    #     }
 
-        print(response.text)
+    #     payload = json.dumps(re_token)
+    #     response = requests.request("POST", url, headers=headers, data=payload)
+
+    #     print(response.text)
     
     def create_and_update_SKU(self):
 
