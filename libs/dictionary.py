@@ -1,4 +1,6 @@
-from libs.settings import OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, OPEN_ACCESS_KEY, MOLOG_USERNAME, MOLOG_PASSWORD, TIMESTAMP, API_CODE
+from libs.settings import TimestampMillisec64, OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, MOLOG_USERNAME, MOLOG_PASSWORD, SIGN_CODE_SKU, \
+                SIGN_CODE_SYSTEM_TOKEN, SIGN_CODE_REFRESH_TOKEN, REFRESH_TOKEN
+from libs.data_forms import SKU_form  
 import requests
 import json
 
@@ -10,35 +12,40 @@ class rest_molog(object):
         self.url = OPEN_URL
         self.app_key = OPEN_APP_KEY
         self.secret_key = OPEN_SECRET_KEY
-        self.access_key = OPEN_ACCESS_KEY
         self.username = MOLOG_USERNAME
         self.password = MOLOG_PASSWORD
-        self.timestamp = TIMESTAMP
-        self.sign = API_CODE
+        self.timestamp = str(TimestampMillisec64())
 
-    def gen_details_default(self, types):
+        self.sign_SYSTEM_TOKEN = SIGN_CODE_SYSTEM_TOKEN
+        self.sign_REFRESH_TOKEN = SIGN_CODE_REFRESH_TOKEN
+        self.sign_SKU = SIGN_CODE_SKU
 
-        # if types == "create_token":
-        #     url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
-        # if types == "refresh_token":
-        #     url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign
+
+    def gen_details_default(self, types, access_key):
+
+        url = ''
+        
+        if types == "create_token":
+            url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_SYSTEM_TOKEN
+        if types == "refresh_token":
+            url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_REFRESH_TOKEN
         if types == "create_and_update_SKU":
-            url = self.url+"/sku/sku?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
-        if types == "update_SKU_BOM":
-            url = self.url+"/sku/skubom?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
-        if types == "create_PSO":
-            url = self.url+"/pso/pso?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
-        if types == "create_update_partner":
-            url = self.url+"/partner/partner?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
-        if types == "get_inventory":
-            url = self.url+"/inventory/list?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+self.access_key
+            url = self.url+"/sku/sku?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_SKU+"&ACCESS_TOKEN="+access_key
+        # if types == "update_SKU_BOM":
+        #     url = self.url+"/sku/skubom?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        # if types == "create_PSO":
+        #     url = self.url+"/pso/pso?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        # if types == "create_update_partner":
+        #     url = self.url+"/partner/partner?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        # if types == "get_inventory":
+        #     url = self.url+"/inventory/list?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
 
         ID = {
             'USERNAME' : self.username,
             'PASSWORD' : self.password
         }
         
-        payload = json.dump(ID)
+        payload = json.dumps(ID)
 
         headers = {
             'Content-Type' : 'application/json'
@@ -46,69 +53,30 @@ class rest_molog(object):
  
         return url, payload, headers
     
-    # def create_token(self):
+    def create_token(self):
 
-    #     url, payload, headers = self.gen_details_default("create_token")
-    #     response = requests.request("POST", url, headers=headers, data=payload)
+        url, payload, headers = self.gen_details_default("create_token", '')
+        response = requests.request("POST", url, headers=headers, data=payload)
 
-    #     print(response.text)
+        print(response.text)
+        return response.json()
 
-    # def refresh_token(self):
-        
-    #     url, __, headers = self.gen_details_default("refresh_token")
-    #     re_token = {
-    #         "REFRESH_TOKEN" : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSIsImN1c3RfaWQiOjQsImFwaV9zaWduYXR1cmUiOiJjR1NKNmUzVlI1RiV5a3NmcjR4a082M1BXUFhEODlIS0w1R285NTVsSEUjUlFOQzF4VEtnUXduSktkNnFsNyUlIiwiaWF0IjoxNjA1MDgwODU2LCJleHAiOjE2MDc2NzI4NTZ9.J6G7Af5yeM-uJ5JNwNJJZ85fhL_rJ5nJVYs1JupjnsM',
-    #     }
+    def refresh_token(self):
 
-    #     payload = json.dumps(re_token)
-    #     response = requests.request("POST", url, headers=headers, data=payload)
+        url, __, headers = self.gen_details_default("refresh_token", '')
+        re_token = {"REFRESH_TOKEN" : REFRESH_TOKEN }
 
-    #     print(response.text)
+        payload = json.dumps(re_token)
+        response = requests.request("POST", url, headers=headers, data=payload)
+
+        print(response.text)
+        return response.json()
     
     def create_and_update_SKU(self):
 
-        url, payload, headers = self.gen_details_default("create_and_update_SKU")
+        url, __, headers = self.gen_details_default("create_and_update_SKU", '')
+        payload = SKU_form()
         response = requests.request("POST", url, headers=headers, data=payload)
 
         print(response.text)
-
-    def update_SKU_BOM(self):
-        
-        url, payload, headers = self.gen_details_default("update_SKU_BOM")
-        response = requests.request("PUT", url, headers=headers, data=payload)
-
-        print(response.text)
-
-    def create_PSO(self):
-        
-        url, payload, headers = self.gen_details_default("create_PSO")
-        response = requests.request("POST", url, headers=headers, data=payload)
-
-        print(response.text)
-
-    def create_update_partner(self):
-        
-        url, payload, headers = self.gen_details_default("create_update_partner")
-        response = requests.request("POST", url, headers=headers, data=payload)
-
-        print(response.text)
-
-    def get_inventory(self):
-
-        page = "&PAGE="+1
-        size = "&SIZE="+10
-        date_from = "&RECEIVED_DATE_FROM="+"2019-11-16T00:00:00%2B07:00&"
-        date_to = "&RECEIVED_DATE_TO="+"2020-11-16T23:59:59%2B07:00"
-        sku_code = "&SKU_CODE="+"P97560204695"
-        on_hand_only = "&ON_HAND_ONLY="+"true"
-                
-        url, payload, headers = self.gen_details_default("create_update_partner")
-
-        urls = url+page+size+date_from+date_to+sku_code+on_hand_only
-                
-        payload = ""
-        headers = {}
-
-        response = requests.request("GET", urls, headers=headers, data=payload)
-
-        print(response.text)
+        return response.json()
