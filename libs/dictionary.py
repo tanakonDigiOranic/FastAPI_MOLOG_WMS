@@ -1,9 +1,8 @@
-from libs.settings import TimestampMillisec64, OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, MOLOG_USERNAME, MOLOG_PASSWORD, SIGN_CODE_SKU, \
-                SIGN_CODE_SYSTEM_TOKEN, SIGN_CODE_REFRESH_TOKEN, REFRESH_TOKEN
+from libs.settings import OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, MOLOG_USERNAME, MOLOG_PASSWORD, REFRESH_TOKEN
+from libs.autogen import gen_timestamp, gen_signature
 from libs.data_forms import SKU_form  
 import requests
 import json
-
 
 
 class rest_molog(object):
@@ -14,31 +13,31 @@ class rest_molog(object):
         self.secret_key = OPEN_SECRET_KEY
         self.username = MOLOG_USERNAME
         self.password = MOLOG_PASSWORD
-        self.timestamp = str(TimestampMillisec64())
-
-        self.sign_SYSTEM_TOKEN = SIGN_CODE_SYSTEM_TOKEN
-        self.sign_REFRESH_TOKEN = SIGN_CODE_REFRESH_TOKEN
-        self.sign_SKU = SIGN_CODE_SKU
+        self.timestamp = str(gen_timestamp())
 
 
     def gen_details_default(self, types, access_key):
 
+
         url = ''
         
         if types == "create_token":
-            url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_SYSTEM_TOKEN
+            sign = gen_signature(types)
+            url = self.url+"/system/token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign
         if types == "refresh_token":
-            url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_REFRESH_TOKEN
+            sign = gen_signature(types)
+            url = self.url+"/system/refresh_token?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign
         if types == "create_and_update_SKU":
-            url = self.url+"/sku/sku?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign_SKU+"&ACCESS_TOKEN="+access_key
+            sign = gen_signature(types)
+            url = self.url+"/sku/sku?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign+"&ACCESS_TOKEN="+access_key
         # if types == "update_SKU_BOM":
-        #     url = self.url+"/sku/skubom?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        #     url = self.url+"/sku/skubom?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign+"&ACCESS_TOKEN="+access_key
         # if types == "create_PSO":
-        #     url = self.url+"/pso/pso?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        #     url = self.url+"/pso/pso?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign+"&ACCESS_TOKEN="+access_key
         # if types == "create_update_partner":
-        #     url = self.url+"/partner/partner?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        #     url = self.url+"/partner/partner?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign+"&ACCESS_TOKEN="+access_key
         # if types == "get_inventory":
-        #     url = self.url+"/inventory/list?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+self.sign+"&ACCESS_TOKEN="+access_key
+        #     url = self.url+"/inventory/list?APP_KEY="+self.app_key+"&TIMESTAMP="+self.timestamp+"&SIGN="+sign+"&ACCESS_TOKEN="+access_key
 
         ID = {
             'USERNAME' : self.username,
