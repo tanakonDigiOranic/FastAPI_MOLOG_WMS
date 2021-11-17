@@ -17,6 +17,8 @@ def gen_signature(path):
         mes = bytes('/system/token{}'.format(end_of_row), 'utf-8')
     if path == "refresh_token":
         mes = bytes('/system/refresh_token{}'.format(end_of_row), 'utf-8')
+    if path == "create_SKU":
+        mes = bytes('/sku/sku{}'.format(end_of_row), 'utf-8')
 
     secret = bytes(OPEN_SECRET_KEY, 'utf-8')
     hash = hmac.new(secret, mes, hashlib.sha256)
@@ -24,10 +26,3 @@ def gen_signature(path):
     # to lowercase hexits
     SIGN = hash.hexdigest().upper()
     return SIGN
-
-def read_create_refresh(option):
-    if option == 'create':
-        print('')
-
-    if option == 'refresh':
-        print('')
