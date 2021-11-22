@@ -3,6 +3,13 @@ import hashlib
 import hmac
 import datetime
 
+"""
+timestamp & signature(path) auto generate every time.
+timestamp >> millisec
+signature >> using diffrent path
+
+docs : https://app.mologtech.com/open-api-doc-th/
+"""
 
 def gen_timestamp():
     # TimestampMillisec64

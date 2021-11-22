@@ -3,3 +3,4 @@ test.py
 __pycache__
 .python-version
 resources/*
+libs/erp_to_molog.py
