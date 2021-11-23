@@ -1,18 +1,29 @@
+from libs.settings import PATH_CREATE, PATH_REFRESH
 from datetime import datetime
 import json
+
+
+def read_token(option):
+
+    data = None
+
+    if option == 'create':
+        file_create1 = open(PATH_CREATE, 'r')
+        data = json.loads(file_create1.read())
+
+    if option == 'refresh':
+        file_create2 = open(PATH_REFRESH, 'r')
+        data = json.loads(file_create2.read())
+
+    return data
 
 def check_expiration():
 
     ac_expired = False
     rf__expired = False
 
-    path_create = 'resources/create_token.json'
-    path_refresh = 'resources/refresh_token.json'
-
     now = datetime.now().date()
-
-    file_create1 = open(path_create, 'r')
-    data1 = json.loads(file_create1.read())
+    data1 = read_token('create')
 
     # milisec to sec
     ate_sec_timestamp = data1['ACCESS_TOKEN_EXPIRE']/1000
@@ -21,8 +32,7 @@ def check_expiration():
     if ac_token_expiration_date <= now:
         ac_expired = True
 
-        file_create2 = open(path_refresh, 'r')
-        data2 = json.loads(file_create2.read())
+        data2 = read_token('create')
 
         # milisec to sec
         rfe_sec_timestamp = data2['REFRESH_TOKEN_EXPIRE']/1000
