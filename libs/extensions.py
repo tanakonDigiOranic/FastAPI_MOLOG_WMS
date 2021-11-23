@@ -17,6 +17,7 @@ def read_token(option):
 
     return data
 
+
 def check_expiration():
 
     ac_expired = False
@@ -42,5 +43,3 @@ def check_expiration():
             rf__expired = True
 
     return ac_expired, rf__expired
-
-

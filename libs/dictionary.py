@@ -6,22 +6,24 @@ from libs.extensions import check_expiration, read_token
 import requests
 import json
 
+
+# auto check every times using dictionary.py 
 def gen_token():
     api = rest_molog()
     ac_expired, rf_expired = check_expiration()
 
     if rf_expired == True:
         res1 = api.create_token()
-        with open('resources/create_token.json', 'w') as f:
+        with open(PATH_CREATE, 'w') as f:
             json.dump(res1, f)
 
         res2 = api.refresh_token()
-        with open('resources/refresh_token.json', 'w') as f:
+        with open(PATH_REFRESH, 'w') as f:
             json.dump(res2, f)
 
     if ac_expired == True:
         res3 = api.refresh_token()
-        with open('resources/refresh_token.json', 'w') as f:
+        with open(PATH_REFRESH, 'w') as f:
             json.dump(res3, f)
 
     data = read_token('refresh')

@@ -1,4 +1,4 @@
-from libs.settings import OPEN_URL, OPEN_APP_KEY, OPEN_SECRET_KEY, MOLOG_USERNAME, MOLOG_PASSWORD
+from libs.settings import OPEN_APP_KEY, OPEN_SECRET_KEY
 import hashlib
 import hmac
 import datetime
